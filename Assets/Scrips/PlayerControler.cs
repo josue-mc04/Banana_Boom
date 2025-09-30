@@ -1,26 +1,19 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(CharacterController))]
-public class PlayerControler : MonoBehaviour
+public class PlayerMovement : MonoBehaviour
 {
-    public float MoveSpeed=5f  ;
+    public float speed = 5f;
+    private Vector2 moveInput;
 
-    Vector3 moveInput= Vector3.zero;
-    CharacterController characterController;
-
-    private void Awake()
+    void Update()
     {
-        characterController= GetComponent<CharacterController>();
+        Vector3 move = new Vector3(moveInput.x, 0, moveInput.y);
+        transform.Translate(move * speed * Time.deltaTime, Space.World);
     }
-    private void Update()
-    {
-        Move();
-    }
-    private void Move()
-    {
-        moveInput = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
-        moveInput = transform.TransformDirection(moveInput) * MoveSpeed;
 
-        characterController.Move(moveInput*Time.deltaTime);
+    public void Move(InputAction.CallbackContext context)
+    {
+        moveInput = context.ReadValue<Vector2>();
     }
 }
